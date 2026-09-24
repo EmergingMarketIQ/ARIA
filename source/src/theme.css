@@ -1,0 +1,38 @@
+/* EmergingMarketIQ theme — executive navy / signal blue */
+:root{
+  --font-head:'Manrope',Inter,system-ui,sans-serif; --font-body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --bg:#FFFFFF; --bg-alt:#F4F7FC; --surface:#FFFFFF; --ink:#1B2540; --ink-strong:#0A1F44; --muted:#56627F;
+  --line:#E4EAF4; --line-strong:#CBD5E6; --brand:#1A3A7A; --brand-tint:#EEF3FD; --on-brand:#FFFFFF;
+  --accent-ink:#2C4F9E; --cta:#0A1F44; --cta-hover:#1A3A7A; --on-cta:#FFFFFF; --link:#2C4F9E; --focus:#5B8DEF;
+  --good:#1E7A4F; --good-tint:#E3F4EB; --warn:#9A4A00; --warn-tint:#FDEEDC;
+  --radius:16px; --shadow-sm:0 2px 8px rgba(10,31,68,.06); --shadow-lg:0 24px 60px rgba(10,31,68,.14);
+}
+.hero{background:radial-gradient(1200px 500px at 85% -10%,#DCE6FF 0,transparent 60%),#fff}
+.hero h1 em{font-style:normal;color:#2C4F9E}
+.brand-mark{background:linear-gradient(135deg,#0A1F44,#2C4F9E);color:#fff;font-weight:800}
+.band{background:#0A1F44;color:#DCE4F5}
+.band h2,.band h3{color:#fff}
+.band .muted{color:#AFC0E0}
+.sev{font-weight:700}
+.sev-Severe{color:#B42318}.sev-High{color:#B54708}.sev-ELEVATED,.sev-MONITOR{color:#8A6D00}
+@media(max-width:719px){
+  .brand .muted{display:none}
+  .hero{padding:22px 0 20px}
+  .hero .lede{font-size:1rem}
+  .hero-cta,.hero .trust{display:none}
+  .hero-grid{gap:18px}
+  .wizard{min-height:0}
+}
+.trust-under{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.82rem;color:var(--muted);list-style:none;padding:0}
+.trust-under li::before{content:"✓ ";color:var(--good);font-weight:700}
+@media(min-width:720px){.trust-under{display:none}}
+.dims{display:grid;gap:6px;margin:12px 0 4px}
+.dim{display:grid;grid-template-columns:128px 1fr 32px;gap:8px;align-items:center;font-size:.84rem}
+.dim i{display:block;height:8px;border-radius:99px;background:var(--line);position:relative;overflow:hidden}
+.dim i::after{content:"";position:absolute;inset:0;width:calc(var(--v)*10%);background:var(--brand);border-radius:99px}
+.call-form{display:grid;gap:10px;margin-top:10px}
+.call-form .fgrid{display:grid;gap:10px}
+@media(min-width:560px){.call-form .fgrid{grid-template-columns:1fr 1fr}}
+.call-form label{display:grid;gap:4px;font-size:.85rem;color:var(--muted);font-weight:500}
+.call-form input,.call-form select,.call-form textarea{min-height:44px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line-strong);font:inherit;color:var(--ink);background:var(--surface)}
+.call-form .btn{justify-self:start}

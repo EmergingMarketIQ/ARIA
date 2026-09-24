@@ -1,3 +1,17 @@
+# EmergingMarketIQ — web app (GitHub Pages)
+
+**Live:** https://emergingmarketiq.github.io/ARIA/
+
+This repo hosts the browser version of the product (a free 60-second wizard, ARIA analysis, shareable reports and SEO pages) **and** the Google Play policy pages.
+**Do not move or rename** `privacy.html` and `delete.html`. The Play Store listing links to them.
+
+- The site files at the root are generated. Source is in `source/`. To rebuild: `cd source && node build.mjs`, then copy `source/site/*` to the repo root. Never overwrite the policy pages.
+- Backend: Supabase edge functions `aria-web`, `web-leads` and `web-mailer`. Source is in `source/supabase/`.
+- Analytics queries: `source/analytics/funnel.sql`.
+
+---
+
+## Previous README
 # EmergingMarketIQ — Landing Page
 
 A premium, production-ready landing page for the **EmergingMarketIQ** Android application. Built with vanilla **HTML, CSS, and JavaScript** so it deploys cleanly to **GitHub Pages** (or any static host) with zero build step.
