@@ -6,7 +6,8 @@ const SITE_URL = (process.env.SITE_URL || 'https://emergingmarketiq.github.io/AR
 const CONFIG = { product: 'emiq', supabaseUrl: 'https://bznlmkaepbhrpflvdxix.supabase.co',
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6bmxta2FlcGJocnBmbHZkeGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NDQyMzIsImV4cCI6MjA4OTMyMDIzMn0.c6FxwEmiRLAvXy5WkvLXVrIgPfO_GkpGHI6Mof0aKBA',
   siteUrl: process.env.SHARE_BASE ?? SITE_URL, debug: !!process.env.DEBUG };
-const REVIEWED = 'March 2026';
+const REVIEWED = '24 September 2026';
+const STRUCT = 'March 2026';
 const M = JSON.parse(fs.readFileSync(path.join(SRC, 'markets.json'), 'utf8'));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const usdK = (n) => (n == null ? '—' : n >= 1e6 ? 'US$' + (n / 1e6).toFixed(1) + 'M' : 'US$' + Math.round(n / 1000) + 'k');
@@ -49,7 +50,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 </div></header>
 <main id="main">${body}</main>
 <footer class="site-foot"><div class="wrap cols">
-<div><b>EmergingMarketIQ</b><p>Market-entry intelligence for 24 emerging markets across the Gulf, South Asia, Southeast Asia and Africa. Decision support only — not legal, tax or investment advice.</p><p class="small">Country data reviewed ${REVIEWED}. Current conditions change quickly; verify before acting.</p></div>
+<div><b>EmergingMarketIQ</b><p>Market-entry intelligence for 24 emerging markets across the Gulf, South Asia, Southeast Asia and Africa. Decision support only — not legal, tax or investment advice.</p><p class="small">Current conditions, alerts, GDP and FX updated ${REVIEWED}; structural scores reviewed ${STRUCT}. Conditions change quickly — verify before acting.</p></div>
 <div><b>Explore</b><ul><li><a href="${rel}index.html#app">Market-entry analysis</a></li><li><a href="${rel}markets/index.html">All 24 market briefs</a></li><li><a href="https://play.google.com/store/apps/details?id=com.emergingmarketiq.app&utm_source=web&utm_medium=footer" rel="noopener" data-track="app_click">Android app</a></li></ul></div>
 <div><b>Company</b><ul><li><a href="${rel}web-privacy.html">Website privacy</a></li><li><a href="${rel}privacy.html">App privacy policy</a></li><li><a href="mailto:supportmarketiq@gmail.com">Contact</a></li><li>© 2026 EmergingMarketIQ · Melbourne</li></ul></div>
 </div></footer>
@@ -107,11 +108,11 @@ w('markets/index.html', layout({ rel: '../', canonical: 'markets/', title: 'Emer
   body: `<section class="section" style="padding-top:20px"><div class="wrap">
   <nav class="breadcrumb"><a href="../index.html">Home</a> › Market briefs</nav>
   <h1 style="font-size:clamp(1.8rem,4.5vw,2.8rem)">Emerging markets compared for market entry</h1>
-  <p class="muted" style="max-width:70ch">Structural scores (0–10) and an indicative first-year cost for a 10-person team. Data reviewed ${REVIEWED}. For a ranking weighted to your plan, <a href="../index.html#app">run the analysis</a>.</p>
+  <p class="muted" style="max-width:70ch">Structural scores (0–10) and an indicative first-year cost for a 10-person team. Current conditions updated ${REVIEWED}; structural scores reviewed ${STRUCT}. For a ranking weighted to your plan, <a href="../index.html#app">run the analysis</a>.</p>
   <div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table" style="margin-top:14px"><table><thead><tr><th>Market</th><th>Region</th><th class="num">Score</th><th>Risk</th><th class="num">Talent</th><th class="num">10-person first year</th><th>Current alert</th></tr></thead><tbody>
   ${sorted.map((m) => `<tr><td><a href="${m.slug}.html">${esc(m.flag || '')} ${esc(m.name)}</a></td><td>${esc(m.region)}</td><td class="num">${m.score}</td><td>${esc(m.risk)}</td><td class="num">${m.dim_talent}</td><td class="num">${usdK(m.c10?.firstYear)}</td><td>${m.geopolitical_alert_level && m.geopolitical_alert_level !== 'None' ? `<span class="sev sev-${esc(m.geopolitical_alert_level)}">${esc(m.geopolitical_alert_level)}</span>` : '—'}</td></tr>`).join('')}
   </tbody></table></div>
-  <p class="notice">Scores and costs from EmergingMarketIQ’s dataset, reviewed ${REVIEWED}. Indicative only — verify with local advisors.</p>
+  <p class="notice">Scores and costs from EmergingMarketIQ’s dataset — current conditions updated ${REVIEWED}, structural scores ${STRUCT}. Indicative only — verify with local advisors.</p>
 </div></section>` }));
 
 const DIMN = [['dim_regulatory', 'Regulatory'], ['dim_tax', 'Tax'], ['dim_foreign_investment', 'Foreign investment'], ['dim_political_stability', 'Political stability'], ['dim_infrastructure', 'Infrastructure'], ['dim_talent', 'Talent']];
@@ -120,7 +121,7 @@ for (const m of M) {
   const alert = m.geopolitical_alert_level && m.geopolitical_alert_level !== 'None';
   const inds = [1, 2, 3, 4].map((i) => ({ n: m[`key_industry_${i}_name`], d: m[`key_industry_${i}_desc`], t: m[`key_industry_${i}_trend`], inv: m[`key_industry_${i}_investors`] })).filter((x) => x.n);
   const faq = [
-    [`Is ${m.name} a good market to enter in 2026?`, `${m.name} scores ${m.score}/10 on EmergingMarketIQ’s structural index (risk: ${m.risk}). ${m.summary}. Current-conditions score: ${m.current_conditions_score}/10 (${m.current_conditions_summary}) — reviewed ${REVIEWED}.`],
+    [`Is ${m.name} a good market to enter in 2026?`, `${m.name} scores ${m.score}/10 on EmergingMarketIQ’s structural index (risk: ${m.risk}). ${m.summary}. Current-conditions score: ${m.current_conditions_score}/10 (${m.current_conditions_summary}) — updated ${REVIEWED}.`],
     ...(m.c10 ? [[`How much does it cost to set up a 10-person office in ${m.name}?`, `Our cost model estimates about ${usdK(m.c10.firstYear)} for the first year (≈${usdK(m.c10.monthly)} per month run-rate plus ≈${usdK(m.c10.setup)} one-off setup) for a 10-person professional-services team. Indicative only.`]] : []),
     [`What are the first steps to set up a company in ${m.name}?`, [m.entry_step_1, m.entry_step_2, m.entry_step_3, m.entry_step_4].filter(Boolean).join(' Then: ')],
   ];
@@ -131,10 +132,10 @@ for (const m of M) {
       { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL + '/' }, { '@type': 'ListItem', position: 2, name: 'Market briefs', item: SITE_URL + '/markets/' }, { '@type': 'ListItem', position: 3, name: m.name }] }],
     body: `<section class="section" style="padding-top:20px"><div class="wrap">
   <nav class="breadcrumb"><a href="../index.html">Home</a> › <a href="index.html">Market briefs</a> › ${esc(m.name)}</nav>
-  <p class="eyebrow">${esc(m.region)} · reviewed ${REVIEWED}</p>
+  <p class="eyebrow">${esc(m.region)} · updated ${REVIEWED}</p>
   <h1 style="font-size:clamp(1.8rem,4.5vw,2.8rem)">${esc(m.flag || '')} Doing business in ${esc(m.name)}</h1>
   <p class="lede muted" style="font-size:1.1rem">${esc(m.summary)}.</p>
-  ${alert ? `<div class="card" style="border-color:#F5C9A8;background:#FFF7F0;margin:12px 0"><b class="sev sev-${esc(m.geopolitical_alert_level)}">Current-conditions alert (${esc(m.geopolitical_alert_level)}, ${esc(m.geopolitical_alert_date || REVIEWED)}):</b> ${esc(m.geopolitical_alert)}<p class="small muted" style="margin:6px 0 0">This signal may be out of date — check current advisories before acting.</p></div>` : ''}
+  ${alert ? `<div class="card" style="border-color:#F5C9A8;background:#FFF7F0;margin:12px 0"><b class="sev sev-${esc(m.geopolitical_alert_level)}">Current-conditions alert (${esc(m.geopolitical_alert_level)}, ${esc(m.geopolitical_alert_date || REVIEWED)}):</b> ${esc(m.geopolitical_alert)}<p class="small muted" style="margin:6px 0 0">Conditions are changing fast — check current government travel and trade advisories before acting.</p></div>` : ''}
   <div class="kpis" style="margin:18px 0">
     <div class="kpi"><b>${m.score}/10</b><span>structural score · risk ${esc(m.risk)}</span></div>
     <div class="kpi"><b>${m.current_conditions_score}/10</b><span>current conditions</span></div>
@@ -156,7 +157,7 @@ for (const m of M) {
   <div class="pill-row">${peers.map((p) => `<a class="pill" href="${p.slug}.html">${esc(p.flag || '')} ${esc(p.name)} · ${p.score}</a>`).join('')}</div>
   <h2 style="font-size:1.3rem;margin-top:24px">Common questions</h2>
   ${faq.map(([q, a]) => `<details class="card" style="margin-bottom:10px"><summary><b>${esc(q)}</b></summary><p style="margin-top:10px">${esc(a)}</p></details>`).join('')}
-  <p class="notice">Source: EmergingMarketIQ country dataset, reviewed ${REVIEWED}. Rules, rates and conditions change — verify with local counsel before acting. Not legal, tax or investment advice.</p>
+  <p class="notice">Source: EmergingMarketIQ country dataset — current conditions, alerts, GDP (World Bank 2025) and FX updated ${REVIEWED}; structural scores reviewed ${STRUCT}. Rules, rates and conditions change — verify with local counsel before acting. Not legal, tax or investment advice.</p>
 </div></section>` }));
 }
 w('web-privacy.html', layout({ canonical: 'web-privacy.html', title: 'Privacy — EmergingMarketIQ web', desc: 'How the EmergingMarketIQ website handles your data.', body: `<section class="section"><div class="wrap" style="max-width:760px"><h1 style="font-size:2rem">Privacy on the EmergingMarketIQ website</h1>
