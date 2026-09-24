@@ -1,0 +1,25 @@
+name: Keep Supabase Awake
+
+# Pings the EmergingMarketIQ Supabase project every 3 days so it
+# never hits the 7-day free-tier inactivity auto-pause.
+
+on:
+  schedule:
+    # Runs at 03:00 UTC every 3rd day
+    - cron: '0 3 */3 * *'
+  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab to test
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST endpoint
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://bznlmkaepbhrpflvdxix.supabase.co/rest/v1/countries?select=name&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+          echo "Supabase responded with HTTP $response"
+          if [ "$response" -ge 400 ]; then
+            echo "::warning::Supabase ping returned an error status ($response) — check the project is active and the table name/anon key are correct."
+          fi
